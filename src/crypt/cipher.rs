@@ -7,7 +7,6 @@ pub struct CipherContainer {
     cipher: ChaCha20Poly1305,
     nonce: Nonce
 }
-pub struct EncryptedContainer(Vec<u8>, Nonce);
 
 impl CipherContainer {
     pub fn new(key: [u8; 32]) -> CipherContainer {
