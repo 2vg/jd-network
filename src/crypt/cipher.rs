@@ -1,3 +1,5 @@
+use crate::error::*;
+
 use anyhow::*;
 use chacha20poly1305::{ChaCha20Poly1305, Key, Nonce};
 use chacha20poly1305::aead::{Aead, NewAead, Payload};
@@ -33,7 +35,8 @@ impl CipherContainer {
     pub fn encrypt(&self, msg: &[u8]) -> Result<Vec<u8>> {
         match self.cipher.encrypt(&self.nonce, msg) {
             Ok(cipher_text) => { Ok(cipher_text) },
-            Err(_) => { bail!("") }
+            Err(_) => { Err(CryptionError::FailedToEncrypt)
+                            .with_context(|| format!("text is {:?}, nonce is {:?}", msg, self.nonce))? }
         }
     }
 
@@ -41,14 +44,16 @@ impl CipherContainer {
         let payload = Payload { msg, aad };
         match self.cipher.encrypt(&self.nonce, payload) {
             Ok(cipher_text) => { Ok(cipher_text) },
-            Err(_) => { bail!("") }
+            Err(_) => { Err(CryptionError::FailedToEncrypt)
+                .with_context(|| format!("text is {:?}, nonce is {:?}, aad: {:?}", msg, self.nonce, aad))? }
         }
     }
 
     pub fn decrypt(&self, msg: &[u8]) -> Result<Vec<u8>> {
         match self.cipher.decrypt(&self.nonce, msg) {
             Ok(plain_text) => { Ok(plain_text) },
-            Err(_) => { bail!("") }
+            Err(_) => { Err(CryptionError::FailedToDecrypt)
+                .with_context(|| format!("text is {:?}, nonce is {:?}", msg, self.nonce))? }
         }
     }
 
@@ -56,7 +61,8 @@ impl CipherContainer {
         let payload = Payload { msg, aad };
         match self.cipher.decrypt(&self.nonce, payload) {
             Ok(plain_text) => { Ok(plain_text) },
-            Err(_) => { bail!("") }
+            Err(_) => { Err(CryptionError::FailedToDecrypt)
+                .with_context(|| format!("text is {:?}, nonce is {:?}, aad: {:?}", msg, self.nonce, aad))? }
         }
     }
 }
