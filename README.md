@@ -1,14 +1,13 @@
 Jiami de Network
 =========================
 
-**NO LONGER DEVELOP!**
+**NO LONGER DEVELOP!**</br>
 There was already a project with almost the same structure, although it was a bit more complicated than the protocol I had imagined.</br>
 I checked this and it's very nice.</br>
 The protocol specification is also well written, which is pretty much what I imagined.</br>
 
 so this is recommanded: https://github.com/mcginty/snow
-
-=========================
+===
 This library provides an easy-to-use end-to-end encrypted network.
 Still development, my plan is to release TCP module first, then UDP.
 
